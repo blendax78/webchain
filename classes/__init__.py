@@ -1,0 +1,1 @@
+from genesis_block import genesis_block

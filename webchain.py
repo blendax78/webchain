@@ -1,10 +1,20 @@
 #1
-import hashlib, json, sys
+import hashlib
+import json
+import sys
+import random
+from datetime import datetime
+from classes import genesis_block
+
+print(str(datetime.utcnow()))
+genesis = genesis_block()
+
+print(genesis.get_contents())
 
 def hashMe(msg=''):
     # For convenience, this is a helper function that wraps our hashing algorithm
-    if type(msg)!=str:
-        msg = json.dumps(msg,sort_keys=True)  # If we don't sort keys, we can't guarantee repeatability!
+    if type(msg) != str:
+        msg = json.dumps(msg, sort_keys=True)  # If we don't sort keys, we can't guarantee repeatability!
 
     if sys.version_info.major == 2:
         return unicode(hashlib.sha256(msg).hexdigest(),'utf-8')
@@ -12,13 +22,12 @@ def hashMe(msg=''):
         return hashlib.sha256(str(msg).encode('utf-8')).hexdigest()
 
 #2
-import random
 random.seed(0)
 
 def makeTransaction(maxValue=3):
     # This will create valid transactions in the range of (1,maxValue)
-    sign      = int(random.getrandbits(1))*2 - 1   # This will randomly choose -1 or 1
-    amount    = random.randint(1,maxValue)
+    sign      = int(random.getrandbits(1)) * 2 - 1   # This will randomly choose -1 or 1
+    amount    = random.randint(1, maxValue)
     alicePays = sign * amount
     bobPays   = -1 * alicePays
     # By construction, this will always return transactions that respect the conservation of tokens.
@@ -63,18 +72,18 @@ def isValidTxn(txn,state):
     return True
 
 #6
-state = {u'Alice':5,u'Bob':5}
+# state = {u'Alice':5,u'Bob':5}
 
-print(isValidTxn({u'Alice': -3, u'Bob': 3},state))  # Basic transaction- this works great!
-print(isValidTxn({u'Alice': -4, u'Bob': 3},state))  # But we can't create or destroy tokens!
-print(isValidTxn({u'Alice': -6, u'Bob': 6},state))  # We also can't overdraft our account.
-print(isValidTxn({u'Alice': -4, u'Bob': 2,'Lisa':2},state)) # Creating new users is valid
-print(isValidTxn({u'Alice': -4, u'Bob': 3,'Lisa':2},state)) # But the same rules still apply!
+# print(isValidTxn({u'Alice': -3, u'Bob': 3},state))  # Basic transaction- this works great!
+# print(isValidTxn({u'Alice': -4, u'Bob': 3},state))  # But we can't create or destroy tokens!
+# print(isValidTxn({u'Alice': -6, u'Bob': 6},state))  # We also can't overdraft our account.
+# print(isValidTxn({u'Alice': -4, u'Bob': 2,'Lisa':2},state)) # Creating new users is valid
+# print(isValidTxn({u'Alice': -4, u'Bob': 3,'Lisa':2},state)) # But the same rules still apply!
 
 #7
-state = {u'Alice':50, u'Bob':50}  # Define the initial state
-genesisBlockTxns = [state]
-genesisBlockContents = {u'blockNumber':0,u'parentHash':None,u'txnCount':1,u'txns':genesisBlockTxns}
+state = genesis.get_state()  # Define the initial state
+genesisBlockTxns = genesis.get_transactions()
+genesisBlockContents = genesis.get_contents()
 genesisHash = hashMe( genesisBlockContents )
 genesisBlock = {u'hash':genesisHash,u'contents':genesisBlockContents}
 genesisBlockStr = json.dumps(genesisBlock, sort_keys=True)
@@ -85,10 +94,10 @@ chain = [genesisBlock]
 #9
 def makeBlock(txns,chain):
     parentBlock = chain[-1]
-    parentHash  = parentBlock[u'hash']
-    blockNumber = parentBlock[u'contents'][u'blockNumber'] + 1
+    parent_hash  = parentBlock[u'hash']
+    block_number = parentBlock[u'contents'][u'block_number'] + 1
     txnCount    = len(txns)
-    blockContents = {u'blockNumber':blockNumber,u'parentHash':parentHash,
+    blockContents = {u'block_number':block_number,u'parent_hash':parent_hash,
                      u'txnCount':len(txns),'txns':txns}
     blockHash = hashMe( blockContents )
     block = {u'hash':blockHash,u'contents':blockContents}
@@ -135,7 +144,7 @@ def checkBlockHash(block):
     expectedHash = hashMe( block['contents'] )
     if block['hash']!=expectedHash:
         raise Exception('Hash does not match contents of block %s'%
-                        block['contents']['blockNumber'])
+                        block['contents']['block_number'])
     return
 
 #15
@@ -145,24 +154,24 @@ def checkBlockValidity(block,parent,state):
     # - Block hash is valid for the block contents
     # - Block number increments the parent block number by 1
     # - Accurately references the parent block's hash
-    parentNumber = parent['contents']['blockNumber']
-    parentHash   = parent['hash']
-    blockNumber  = block['contents']['blockNumber']
+    parentNumber = parent['contents']['block_number']
+    parent_hash   = parent['hash']
+    block_number  = block['contents']['block_number']
 
     # Check transaction validity; throw an error if an invalid transaction was found.
     for txn in block['contents']['txns']:
         if isValidTxn(txn,state):
             state = updateState(txn,state)
         else:
-            raise Exception('Invalid transaction in block %s: %s'%(blockNumber,txn))
+            raise Exception('Invalid transaction in block %s: %s'%(block_number,txn))
 
     checkBlockHash(block) # Check hash integrity; raises error if inaccurate
 
-    if blockNumber!=(parentNumber+1):
-        raise Exception('Hash does not match contents of block %s'%blockNumber)
+    if block_number!=(parentNumber+1):
+        raise Exception('Hash does not match contents of block %s'%block_number)
 
-    if block['contents']['parentHash'] != parentHash:
-        raise Exception('Parent hash not accurate at block %s'%blockNumber)
+    if block['contents']['parent_hash'] != parent_hash:
+        raise Exception('Parent hash not accurate at block %s'%block_number)
 
     return state
 
@@ -192,7 +201,7 @@ def checkChain(chain):
     # - Each of the transactions are valid updates to the system state
     # - Block hash is valid for the block contents
 
-    for txn in chain[0]['contents']['txns']:
+    for txn in chain[0]['contents']['transactions']:
         state = updateState(txn,state)
     checkBlockHash(chain[0])
     parent = chain[0]
