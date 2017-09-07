@@ -1,10 +1,9 @@
-#1
 import hashlib
 import json
 import sys
 import random
 from datetime import datetime
-from classes import genesis_block
+from core import genesis_block
 
 print(str(datetime.utcnow()))
 genesis = genesis_block()
@@ -130,12 +129,15 @@ while len(txnBuffer) > 0:
     chain.append(myBlock)
 
 #11
+print('CHAIN 0=================');
 print(chain[0])
 
 #12
+print('CHAIN 1=================');
 print(chain[1])
 
 #13
+print('STATE=================');
 print(state)
 
 #14

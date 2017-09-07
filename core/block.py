@@ -1,11 +1,11 @@
-class genesis_block(object):
+class block(object):
 
   def __init__(self):
-    self.state = {u'Alice':50, u'Bob':50}
+    self.state = {}
     self.transactions = [self.state]
     self.block_number = 0
     self.parent_hash = None
-    self.txn_count = 1
+    self.txn_count = 0
 
   def get_state(self):
     return self.state
