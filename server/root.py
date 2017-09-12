@@ -1,11 +1,19 @@
-from server import server
+from server import main
+from core import chain, block, genesis_block
 from flask import request, Response, json
-
 import json
 
-@server.route('/')
+block_chain = chain()
+# Eventually remove
+genesis = genesis_block()
+block_chain = chain()
+block_chain.append_block(genesis)
+new = block_chain.create_block({u'edit':0, u'html':'',u'data': { 'hello': 'world' }})
+# /Eventually remove
+
+@main.route('/')
 def index():
-  return render_response({'hi':'hello world'})
+  return render_response(block_chain.get_json())
 
 # HELPER FUNCTIONS #############################################################
 

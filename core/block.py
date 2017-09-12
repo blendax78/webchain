@@ -1,22 +1,48 @@
+import datetime
+import hashlib
+import json
+import sys
+import random
+
 class block(object):
 
-  def __init__(self):
-    self.state = {}
-    self.transactions = [self.state]
-    self.block_number = 0
-    self.parent_hash = None
-    self.txn_count = 0
+  def __init__(self, index=0, parent_hash=None, data={}):
+    self.index = index
+    self.data = data
+    self.parent_hash = parent_hash
+    self.timestamp = int(datetime.datetime.utcnow().timestamp())
+    self.transactions = [self.data]
+    self.hash = self.calculate_hash()
 
-  def get_state(self):
-    return self.state
+  def get(self):
+    return self.__dict__
+    # return {
+    #   u'hash': self.hash,
+    #   u'index': self.index,
+    #   u'parent_hash': self.parent_hash,
+    #   u'timestamp': self.timestamp,
+    #   u'transactions': self.get_transactions(),
+    #   u'data': self.data
+    # }
 
   def get_transactions(self):
     return self.transactions
 
-  def get_contents(self):
-    return {
-      u'block_number': self.block_number,
+  def calculate_hash(self):
+    random.seed(0)
+    msg = {
+      u'index': self.index,
       u'parent_hash': self.parent_hash,
-      u'txn_count': self.txn_count,
-      u'transactions': self.get_transactions()
+      u'timestamp': self.timestamp,
+      u'transactions': self.get_transactions(),
+      u'data': self.data
     }
+
+    if type(msg) != str:
+      # If we don't sort keys, we can't guarantee repeatability!
+      msg = json.dumps(msg, sort_keys=True)
+
+    if sys.version_info.major == 2:
+      return unicode(hashlib.sha256(msg).hexdigest(),'utf-8')
+    else:
+      return hashlib.sha256(str(msg).encode('utf-8')).hexdigest()

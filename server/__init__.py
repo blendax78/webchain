@@ -1,5 +1,5 @@
 from flask import Flask
 
-server = Flask(__name__)
+main = Flask(__name__)
 
-from server import main
+from server import root
