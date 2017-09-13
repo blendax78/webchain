@@ -1,6 +1,6 @@
 from server import main
 from core import chain, block, genesis_block
-from flask import request, Response, json
+from flask import request, Response
 import json
 
 block_chain = chain()
