@@ -5,9 +5,16 @@ from server import block_chain
 block = Blueprint('block', __name__)
 
 # Registered with a url_prefix='/block'
+@block.route('/', methods=['POST'])
 @block.route('', methods=['POST'])
 def create_block():
-  return render_response(block_chain.get_simple())
+  # Expects all params to be JSON encoded
+  try:
+    data, html, edit = request.form
+  except Exception as error:
+    return render_response({u'error': True, u'msg': str(error)})
+
+  return render_response(request.form  )
 
 @block.route('/', methods=['GET'])
 @block.route('', methods=['GET'])
