@@ -9,8 +9,7 @@ genesis = genesis_block()
 block_chain = chain()
 block_chain.append_block(genesis)
 new = block_chain.create_block({u'edit':0, u'html':'',u'data': {}})
-print(new.__dict__)
-print(block_chain.__dict__)
+
 # TODO:
 # Remove notion of transactions
 # Save chain to disk

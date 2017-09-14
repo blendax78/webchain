@@ -1,20 +1,23 @@
-# from server import main
-# from core import chain, block, genesis_block
-from server import block
 from flask import request, Response, Blueprint, redirect
 import json
+from server import block_chain
 
 block = Blueprint('block', __name__)
 
 # Registered with a url_prefix='/block'
-
-@block.route('/', methods=['POST'])
+@block.route('', methods=['POST'])
 def create_block():
-  return render_response({'test':'yo'})
+  return render_response(block_chain.get_simple())
 
 @block.route('/', methods=['GET'])
-def redirect_home():
-  return redirect('http://localhost:5001/')
+@block.route('', methods=['GET'])
+@block.route('/<hash>', methods=['GET'])
+def view_block(hash=None):
+  if hash:
+    block = block_chain.get_block(hash)
+    return render_response(block.get() if block else {})
+  else:
+    return redirect('/')
 
 # HELPER FUNCTIONS #############################################################
 
