@@ -9,9 +9,12 @@ class block(object):
   def __init__(self, index=0, parent_hash=None, data={}):
     self.index = index
     self.data = data
+
+    if 'edit' not in self.data:
+      self.data['edit'] = 0
+
     self.parent_hash = parent_hash
     self.timestamp = int(datetime.datetime.utcnow().timestamp())
-    self.transactions = [self.data]
     self.hash = self.calculate_hash()
 
   def get(self):
@@ -25,8 +28,8 @@ class block(object):
     #   u'data': self.data
     # }
 
-  def get_transactions(self):
-    return self.transactions
+  # def get_transactions(self):
+    # return self.transactions
 
   def calculate_hash(self):
     random.seed(0)
@@ -34,7 +37,6 @@ class block(object):
       u'index': self.index,
       u'parent_hash': self.parent_hash,
       u'timestamp': self.timestamp,
-      u'transactions': self.get_transactions(),
       u'data': self.data
     }
 

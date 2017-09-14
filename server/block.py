@@ -10,11 +10,12 @@ block = Blueprint('block', __name__)
 def create_block():
   # Expects all params to be JSON encoded
   try:
-    data, html, edit = request.form
+    data = { u'data': json.loads(request.form['data']), u'html': request.form['html']}
+    new_block = block_chain.create_block(data)
+    return render_response(new_block.get())
   except Exception as error:
     return render_response({u'error': True, u'msg': str(error)})
-
-  return render_response(request.form  )
+ 
 
 @block.route('/', methods=['GET'])
 @block.route('', methods=['GET'])

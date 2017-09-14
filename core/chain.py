@@ -26,6 +26,7 @@ class chain(object):
     parent = self.data[-1] # last block
 
     new_block = block(parent.index, parent.hash, data)
+    print(new_block.get())
     self.append_block(new_block)
 
     return new_block

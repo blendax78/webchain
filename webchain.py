@@ -11,7 +11,6 @@ block_chain.append_block(genesis)
 new = block_chain.create_block({u'edit':0, u'html':'',u'data': {}})
 
 # TODO:
-# Remove notion of transactions
 # Save chain to disk
 
 
