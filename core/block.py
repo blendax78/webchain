@@ -10,11 +10,21 @@ class block(object):
     self.index = index
     self.data = data
 
-    if 'edit' not in self.data:
-      self.data['edit'] = 0
+    properties = {
+      u'edit': 0,
+      u'html': '',
+      u'title': '',
+      u'data': {},
+      u'transactions': []
+    }
+
+    for prop in properties:
+      if prop not in self.data:
+        self.data[prop] = properties[prop]
 
     self.parent_hash = parent_hash
     self.timestamp = int(datetime.datetime.utcnow().timestamp())
+    self.transactions = {'input': '', 'diff': []}
     self.hash = self.calculate_hash()
 
   def get(self):
@@ -37,7 +47,8 @@ class block(object):
       u'index': self.index,
       u'parent_hash': self.parent_hash,
       u'timestamp': self.timestamp,
-      u'data': self.data
+      u'data': self.data,
+      u'transactions': json.dumps(self.transactions)
     }
 
     if type(msg) != str:

@@ -148,10 +148,6 @@ checkChain(chain)
 chainAsText = json.dumps(chain,sort_keys=True)
 checkChain(chainAsText)
 
-#19
-import copy
-nodeBchain = copy.copy(chain)
-
 
 #20
 print('===================================')

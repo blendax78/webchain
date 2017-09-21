@@ -1,6 +1,6 @@
 from flask import request, Response, Blueprint, redirect
 import json
-from server import block_chain
+from server import block_chain, render_response
 
 block = Blueprint('block', __name__)
 
@@ -27,14 +27,3 @@ def view_block(hash=None):
   else:
     return redirect('/')
 
-# HELPER FUNCTIONS #############################################################
-
-def render_response(msg, mimetype='application/json', code=200):
-  # application/json text/html
-  if mimetype == 'application/json':
-    msg = json.dumps(msg)
-
-  resp = Response(msg, mimetype=mimetype)
-  resp.headers['Access-Control-Allow-Origin'] = '*'
-
-  return resp, code
