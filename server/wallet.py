@@ -15,18 +15,7 @@ wallet_route = Blueprint('wallet_route', __name__)
 @wallet_route.route('/', methods=['GET'])
 @wallet_route.route('', methods=['GET'])
 def view_wallet():
-  wallet.test()
+  # importing class, not object
+  wallet().test()
 
   render_response({'wallet':'si'})
-
-# HELPER FUNCTIONS #############################################################
-
-# def render_response(msg, mimetype='application/json', code=200):
-#   # application/json text/html
-#   if mimetype == 'application/json':
-#     msg = json.dumps(msg)
-
-#   resp = Response(msg, mimetype=mimetype)
-#   resp.headers['Access-Control-Allow-Origin'] = '*'
-
-#   return resp, code

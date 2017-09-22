@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, Response
 from core import chain, genesis_block, wallet
-from flask import Response
+
 import json
 
 def render_response(msg, mimetype='application/json', code=200):
@@ -19,7 +19,7 @@ def render_response(msg, mimetype='application/json', code=200):
 main = Flask(__name__)
 
 block_chain = chain()
-wallet = wallet()
+# wallet = wallet()
 
 # Eventually remove
 genesis = genesis_block()
