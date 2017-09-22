@@ -1,6 +1,6 @@
 from flask import request, Response, Blueprint, redirect
 import json
-from server import block_chain, render_response, webchain
+from server import render_response, webchain
 
 block = Blueprint('block', __name__)
 

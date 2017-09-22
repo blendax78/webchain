@@ -29,17 +29,6 @@ class block(object):
 
   def get(self):
     return self.__dict__
-    # return {
-    #   u'hash': self.hash,
-    #   u'index': self.index,
-    #   u'parent_hash': self.parent_hash,
-    #   u'timestamp': self.timestamp,
-    #   u'transactions': self.get_transactions(),
-    #   u'data': self.data
-    # }
-
-  # def get_transactions(self):
-    # return self.transactions
 
   def calculate_hash(self):
     random.seed(0)

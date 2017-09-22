@@ -1,8 +1,8 @@
 from flask import request, Response, Blueprint, redirect
 import json
-from server import wallet, render_response
+from server import wallet, render_response, webchain
 
-wallet_route = Blueprint('wallet_route', __name__)
+wallet = Blueprint('wallet', __name__)
 
 # Registered with a url_prefix='/wallet'
 # @wallet_route.route('/', methods=['POST'])
@@ -12,10 +12,10 @@ wallet_route = Blueprint('wallet_route', __name__)
 #   return server.render_response({'test':'ing'})
 
 
-@wallet_route.route('/', methods=['GET'])
-@wallet_route.route('', methods=['GET'])
+@wallet.route('/', methods=['GET'])
+@wallet.route('', methods=['GET'])
 def view_wallet():
   # importing class, not object
-  wallet().test()
+  webchain.wallet.test()
 
   render_response({'wallet':'si'})
