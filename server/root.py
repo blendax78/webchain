@@ -1,4 +1,4 @@
-from server import main, block_chain, render_response
+from server import main, block_chain, render_response, webchain
 
 from flask import request, Response
 import json
@@ -6,5 +6,5 @@ import json
 
 @main.route('/')
 def index():
-  return render_response(block_chain.get_simple())
+  return render_response(webchain.chain.get_simple())
 

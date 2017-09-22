@@ -1,5 +1,5 @@
 from flask import Flask, Response
-from core import chain, genesis_block, wallet
+from core import chain, genesis_block, wallet, webchain
 
 import json
 
@@ -22,8 +22,8 @@ block_chain = chain()
 # wallet = wallet()
 
 # Eventually remove
-genesis = genesis_block()
-block_chain.append_block(genesis)
+# genesis = genesis_block()
+# block_chain.append_block(genesis)
 # block_chain.create_block({u'edit':0, u'html':'',u'data': { 'hello': 'world' }})
 
 from server import root

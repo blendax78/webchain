@@ -1,6 +1,6 @@
 from flask import request, Response, Blueprint, redirect
 import json
-from server import block_chain, render_response
+from server import block_chain, render_response, webchain
 
 block = Blueprint('block', __name__)
 
@@ -11,7 +11,7 @@ def create_block():
   # Expects all params to be JSON encoded
   try:
     data = { u'data': json.loads(request.form['data']), u'html': request.form['html']}
-    new_block = block_chain.create_block(data)
+    new_block = webchain.chain.create_block(data)
     return render_response(new_block.get())
   except Exception as error:
     return render_response({u'error': True, u'msg': str(error)})
@@ -22,7 +22,7 @@ def create_block():
 @block.route('/<hash>', methods=['GET'])
 def view_block(hash=None):
   if hash:
-    block = block_chain.get_block(hash)
+    block = webchain.chain.get_block(hash)
     return render_response(block.get() if block else {})
   else:
     return redirect('/')
