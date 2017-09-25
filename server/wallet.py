@@ -15,7 +15,6 @@ wallet = Blueprint('wallet', __name__)
 @wallet.route('/', methods=['GET'])
 @wallet.route('', methods=['GET'])
 def view_wallet():
-  # importing class, not object
   webchain.wallet.test()
 
-  render_response({'wallet':'si'})
+  return render_response({'wallet': webchain.wallet.test()})

@@ -17,4 +17,4 @@ class genesis_block(block):
       u'transactions': [li for li in list(difflib.ndiff('', html)) if li[0] != ' ']
     }
     self.timestamp = 1505253995
-    self.hash = self.calculate_hash()
+    self.hash = '408f76a9983b5f5cc0ecaea162744652fd2dc8d26928425eece5ba13d70d2141'#self.calculate_hash()

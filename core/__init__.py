@@ -12,3 +12,4 @@ class webchain(object):
 
 webchain = webchain()
 webchain.chain.append_block(webchain.genesis_block)
+

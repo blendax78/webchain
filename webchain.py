@@ -2,13 +2,7 @@ import hashlib
 import json
 import sys
 
-from core import genesis_block
-from core import chain
-
-genesis = genesis_block()
-block_chain = chain()
-block_chain.append_block(genesis)
-new = block_chain.create_block({u'edit':0, u'html':'',u'data': {}})
+from core import webchain
 
 # TODO:
 # Save chain to disk
@@ -57,10 +51,10 @@ def isValidTxn(txn,state):
   return True
 
 #7
-state = genesis.data  # Define the initial state
+state = webchain.genesis_block.data  # Define the initial state
 
 #8
-chain = [genesis.get()]
+chain = [webchain.genesis_block.get()]
 
 
 #14
@@ -152,7 +146,7 @@ checkChain(chainAsText)
 #20
 print('===================================')
 print('===================================')
-print('Blockchain on Node A is currently %s blocks long' % len(block_chain.data))
+print('Blockchain on Node A is currently %s blocks long' % len(webchain.chain.data))
 
 try:
   print('New Block Received; checking validity...')
@@ -161,4 +155,4 @@ try:
 except:
   print('Invalid block; ignoring and waiting for the next block...')
 
-print('Blockchain on Node A is now %s blocks long' % len(block_chain.data))
+print('Blockchain on Node A is now %s blocks long' % len(webchain.chain.data))
