@@ -5,7 +5,7 @@ import json
 
 def render_response(msg, mimetype='application/json', code=200):
   # application/json text/html
-  print(msg, mimetype)
+
   if mimetype == 'application/json':
     msg = json.dumps(msg)
 

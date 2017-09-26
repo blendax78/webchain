@@ -15,6 +15,4 @@ wallet = Blueprint('wallet', __name__)
 @wallet.route('/', methods=['GET'])
 @wallet.route('', methods=['GET'])
 def view_wallet():
-  webchain.wallet.test()
-
   return render_response({'wallet': webchain.wallet.test()})
