@@ -144,15 +144,19 @@ checkChain(chainAsText)
 
 
 #20
-print('===================================')
-print('===================================')
-print('Blockchain on Node A is currently %s blocks long' % len(webchain.chain.data))
+# print('===================================')
+# print('===================================')
+# print('Blockchain on Node A is currently %s blocks long' % len(webchain.chain.data))
 
-try:
-  print('New Block Received; checking validity...')
-  state = checkBlockValidity(newBlock,chain[-1],state) # Update the state- this will throw an error if the block is invalid!
-  chain.append(newBlock)
-except:
-  print('Invalid block; ignoring and waiting for the next block...')
+# try:
+#   print('New Block Received; checking validity...')
+#   state = checkBlockValidity(newBlock,chain[-1],state) # Update the state- this will throw an error if the block is invalid!
+#   chain.append(newBlock)
+# except:
+#   print('Invalid block; ignoring and waiting for the next block...')
 
-print('Blockchain on Node A is now %s blocks long' % len(webchain.chain.data))
+# print('Blockchain on Node A is now %s blocks long' % len(webchain.chain.data))
+
+# print(webchain.wallet.test1())
+print('====================================')
+print(webchain.wallet.test())

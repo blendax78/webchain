@@ -1,8 +1,9 @@
 # import bitcoin
-import ecdsa
+# import ecdsa
 import os
 import bitcoin
 # import binascii
+# from hashlib import sha256
 # from ecdsa.util import string_to_number, number_to_string
 
 class wallet(object):
@@ -10,33 +11,34 @@ class wallet(object):
   def __init__(self):
     pass
 
-  def random_secret(self):
-    # convert_to_int = lambda array: int(''.join(str(byte) for byte in array).encode("hex"), 16)
-    # convert_to_int = lambda array: int(''.join(str(byte) for byte in array).encode("hex"), 16)
-    convert_to_str = lambda array: ''.join(str(byte) for byte in array)
+  # def base58encode(self, n):
+  #   # Prepend the 0x80 version/application byte
+  #   private_key = b'\x80' + n
+  #   # Append the first 4 bytes of SHA256(SHA256(private_key)) as a checksum
+  #   private_key += sha256(sha256(private_key).digest()).digest()[:4]
+  #   # Convert to Base58 encoding
+  #   code_string = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+  #   value = int.from_bytes(private_key, byteorder='big')
+  #   output = ""
+  #   while value:
+  #     value, remainder = divmod(value, 58)
+  #     output = code_string[remainder] + output
+  #   return output    
 
-    # Collect 256 bits of random data from the OS's cryptographically secure random generator
-    byte_array = os.urandom(32)
+  # def random_secret(self, key = os.urandom(32)):
+  #   convert_to_str = lambda array: ''.join(str(byte) for byte in array)
 
-    return int(convert_to_str(byte_array), 16)
+  #   return int(convert_to_str(key), 16)
 
-  def get_point_pubkey(self, point):
-    if point.y() & 1:
-      key = '03' + '%064x' % point.x()
-    else:
-      key = '02' + '%064x' % point.x()
+  # def get_point_pubkey(self, point):
+  #   if point.y() & 1:
+  #     key = '03' + '%064x' % point.x()
+  #   else:
+  #     key = '02' + '%064x' % point.x()
 
-    # return key.decode('hex')
-    return bytes.fromhex(key)
+  #   return key
 
-  def get_point_pubkey_uncompressed(self, point):
-    key = '04' + \
-          '%064x' % point.x() + \
-          '%064x' % point.y()
-    # return key.decode('hex')
-    return bytes.fromhex(key)
-
-  # def test(self):
+  # def test1(self):
   #   result = {}
   #   # secp256k1, http://www.oid-info.com/get/1.3.132.0.10
   #   _p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
@@ -55,18 +57,20 @@ class wallet(object):
   #   generator = generator_secp256k1
 
   #   # Generate a new private key.
-  #   secret = self.random_secret()
-  #   result['secret'] = str(secret)
+  #   secret_key = os.urandom(32)
+  #   secret = self.random_secret(secret_key)
+
+  #   result['private_key_dec'] = secret
+  #   result['secret_key'] = int.from_bytes(secret_key, byteorder='big')
+  #   result['secret_key_58'] = self.base58encode(secret_key)
 
   #   # Get the public key point.
   #   point = secret * generator
-  #   result['ec_point'] = str(point)
+  #   result['public_key'] = str(point)
 
-  #   result['public'] = str(binascii.hexlify(self.get_point_pubkey(point)))
+  #   # result['bitcoin_address_compressed'] = int.from_bytes(self.get_point_pubkey(point), byteorder='big')
 
-  #   # Given the point (x, y) we can create the object using:
-  #   # point1 = ecdsa.ellipticcurve.Point(curve, point.x(), point.y(), ec_order)
-  #   # assert point1 == point
+  #   result['bitcoin_address'] = self.get_point_pubkey(point)
 
   #   return result
 
@@ -79,7 +83,7 @@ class wallet(object):
         valid_private_key =  0 < decoded_private_key < bitcoin.N
     result = {}
     result['private_key_hex'] = private_key #"Private Key (hex) is: %s\n" %
-    result['priavte_key_dec'] = decoded_private_key #"Private Key (decimal) is: %s\n" % 
+    result['private_key_dec'] = decoded_private_key #"Private Key (decimal) is: %s\n" % 
 
     # Convert private key to WIF format
     wif_encoded_private_key = bitcoin.encode_privkey(decoded_private_key, 'wif')
@@ -117,3 +121,12 @@ class wallet(object):
     # Generate compressed bitcoin address from compressed public key
     result['bitcoin_address_compressed'] = bitcoin.pubkey_to_address(hex_compressed_public_key) #"Compressed Bitcoin Address (b58check) is: %s" % 
     return result
+
+
+# test1() vs test()
+# need to compress pub key
+# {'secret_key_58': '5HwfZDuZazMEaYRQ5va85xEtpgWkncPZ54XZKMYfJtLi6paZb55', 'public_key': '(87683569545154849100949636626005868138045772194104455225660464830691777178044,89675619655127001200455492779346942960745055014995213151620690784706647509676)', 'secret_key': 7578340299196389828612605628484314963513122510741408100431794476208991022027, 'bitcoin_address': '02c1db2442b60efe9af14400d5d720f8a7043f430fe26e5e4068f51ab54783e9bc', 'private_key_dec': 193339471020636547924206028123599572328127341840628211859218753310239040869255756524643257039050969603}
+# ====================================
+# {'wif': '5Jf7dG4BUXYG2fyBZVKwifLrMuNPMHxpiH7aH9tTFLvbqVcmmQa', 'private_key_compressed_hex': '6edee963c06b3ef2758afb6a097b81f03e12cddbbefedbac9b367ff62e1a215901', 'bitcoin_address_compressed': '18VZZkEbdJHMgV3xg49YaV4rxD714ZM83U', 'bitcoin_address': '1M1E7ZEKhCa1H2V28xo8zV7Uhhi7WVH1MC', 'private_key_hex': '6edee963c06b3ef2758afb6a097b81f03e12cddbbefedbac9b367ff62e1a2159', 'private_key_dec': 50148264188737704690879791256601082022554188115509880710089775062875094262105, 'private_key_compressed_wif': 'KzwEF3T3EVnyLNzycQ2cWtEcsG9PeZsPbC81tJE6rJwaku5Xdas7', 'public_key': (32644585136304814356656023794024100879091245924523823688351220301803322373503, 100952066461685327111349222848377098017243902008859522582102727199939775015224), 'public_key_compressed_hex': '02482c2e2fbe01781597598515b4ecfbdadc8994d653c22630a4b1720b0984757f', 'public_key_hex': '04482c2e2fbe01781597598515b4ecfbdadc8994d653c22630a4b1720b0984757fdf30d8427160f41035c60f11a921c9ee72650752189640a38f0564119e91a938'}
+
+# ====================================
