@@ -9,6 +9,9 @@ import bitcoin
 class wallet(object):
 
   def __init__(self):
+    self.public_key = ''
+    self.private_key = ''
+
     pass
 
   # def base58encode(self, n):
@@ -83,54 +86,63 @@ class wallet(object):
 
 # ====================================
 
+  def get(self):
+    return {
+      'private_key': self.private_key,
+      'wallet_address': self.wallet_address,
+      'wallet_address_compressed': self.wallet_address_compressed,
+      'wif_private_key_compressed': self.wif_private_key_compressed,
+      'dict': self.__dict__ #temporary
+    }
 
   def create(self):
     # Generate a random private key
     valid_private_key = False
     while not valid_private_key:
-      private_key = bitcoin.random_key()
-      decoded_private_key = bitcoin.decode_privkey(private_key, 'hex')
-      valid_private_key =  0 < decoded_private_key < bitcoin.N
+      self.private_key = bitcoin.random_key()
+      self.decoded_private_key = bitcoin.decode_privkey(self.private_key, 'hex')
+      valid_private_key =  0 < self.decoded_private_key < bitcoin.N
 
     # Convert private key to WIF format
-    wif_encoded_private_key = bitcoin.encode_privkey(decoded_private_key, 'wif')
+    self.wif_encoded_private_key = bitcoin.encode_privkey(self.decoded_private_key, 'wif')
 
     # Add suffix "01" to indicate a compressed private key
-    compressed_private_key = private_key + '01'
+    self.private_key_compressed = self.private_key + '01'
  
     # Generate a WIF format from the compressed private key (WIF-compressed)
-    wif_compressed_private_key = bitcoin.encode_privkey(bitcoin.decode_privkey(compressed_private_key, 'hex'), 'wif')
+    self.wif_private_key_compressed = bitcoin.encode_privkey(bitcoin.decode_privkey(self.private_key_compressed, 'hex'), 'wif')
 
     # Multiply the EC generator point G with the private key to get a public key point
-    public_key = bitcoin.fast_multiply(bitcoin.G, decoded_private_key)
+    self.public_key = bitcoin.fast_multiply(bitcoin.G, self.decoded_private_key)
 
     # Encode as hex, prefix 04
-    hex_encoded_public_key = bitcoin.encode_pubkey(public_key,'hex')
+    self.hex_encoded_public_key = bitcoin.encode_pubkey(self.public_key,'hex')
 
     # Compress public key, adjust prefix depending on whether y is even or odd
-    (public_key_x, public_key_y) = public_key
+    (public_key_x, public_key_y) = self.public_key
 
     if (public_key_y % 2) == 0:
         compressed_prefix = '02'
     else:
         compressed_prefix = '03'
 
-    hex_compressed_public_key = compressed_prefix + bitcoin.encode(public_key_x, 16)
+    self.hex_compressed_public_key = compressed_prefix + bitcoin.encode(public_key_x, 16)
 
     # Generate bitcoin address from public key
-    bitcoin_address = bitcoin.pubkey_to_address(public_key) #"Bitcoin Address (b58check) is: %s\n" % 
+    self.wallet_address = bitcoin.pubkey_to_address(self.public_key) #"Bitcoin Address (b58check) is: %s\n" % 
 
     # Generate compressed bitcoin address from compressed public key
-    bitcoin_address_compressed = bitcoin.pubkey_to_address(hex_compressed_public_key) #"Compressed Bitcoin Address (b58check) is: %s" % 
-    # return result    
+    self.wallet_address_compressed = bitcoin.pubkey_to_address(self.hex_compressed_public_key) #"Compressed Bitcoin Address (b58check) is: %s" % 
+
+    return self
 
   def test(self):
     # Generate a random private key
     valid_private_key = False
     while not valid_private_key:
-        private_key = bitcoin.random_key()
-        decoded_private_key = bitcoin.decode_privkey(private_key, 'hex')
-        valid_private_key =  0 < decoded_private_key < bitcoin.N
+      private_key = bitcoin.random_key()
+      decoded_private_key = bitcoin.decode_privkey(private_key, 'hex')
+      valid_private_key =  0 < decoded_private_key < bitcoin.N
     result = {}
     result['private_key_hex'] = private_key #"Private Key (hex) is: %s\n" %
     result['private_key_dec'] = decoded_private_key #"Private Key (decimal) is: %s\n" % 
@@ -165,10 +177,10 @@ class wallet(object):
     hex_compressed_public_key = compressed_prefix + bitcoin.encode(public_key_x, 16)
     result['public_key_compressed_hex'] = hex_compressed_public_key #"Compressed Public Key (hex) is: %s\n" % 
 
-    # Generate bitcoin address from public key
-    result['bitcoin_address'] = bitcoin.pubkey_to_address(public_key) #"Bitcoin Address (b58check) is: %s\n" % 
+    # Generate wallet address from public key
+    result['wallet_address'] = bitcoin.pubkey_to_address(public_key) #"Bitcoin Address (b58check) is: %s\n" % 
 
     # Generate compressed bitcoin address from compressed public key
-    result['bitcoin_address_compressed'] = bitcoin.pubkey_to_address(hex_compressed_public_key) #"Compressed Bitcoin Address (b58check) is: %s" % 
+    result['wallet_address_compressed'] = bitcoin.pubkey_to_address(hex_compressed_public_key) #"Compressed Bitcoin Address (b58check) is: %s" % 
     return result
 
