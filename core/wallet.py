@@ -11,6 +11,9 @@ class wallet(object):
   def __init__(self):
     self.public_key = ''
     self.private_key = ''
+    self.wallet_address = ''
+    self.wallet_address_compressed = ''
+    self.wif_private_key_compressed = ''
 
     pass
 
@@ -90,8 +93,8 @@ class wallet(object):
     return {
       'private_key': self.private_key,
       'wallet_address': self.wallet_address,
-      'wallet_address_compressed': self.wallet_address_compressed,
-      'wif_private_key_compressed': self.wif_private_key_compressed,
+      # 'wallet_address_compressed': self.wallet_address_compressed,
+      # 'wif_private_key_compressed': self.wif_private_key_compressed,
       'dict': self.__dict__ #temporary
     }
 
