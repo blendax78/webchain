@@ -25,3 +25,4 @@ A blockchain-based web host network.
 * ---Consider Chance to mine = 1 / length of block chain
 * Need node registration
 * Record nodes in blockchain, or set up a central node
+* Check data by submitting to multiple nodes?
